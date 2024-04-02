@@ -9,11 +9,6 @@ Brainfuck のインタプリタを JS と WASM で比較して遊ぼう！
 どっちも同じようなふるまいをするコードを書いたはずなのでWASMの方が速くなると思っていたのですがなぜだろう...
 
 
-## 他の自分のbrainfuck関連のリポジトリ
-
-- [brainfuck_interpreter_js_vs_wasm](https://github.com/kobayashiharuto/brainfuck_interpreter_js_vs_wasm): ブラウザで Brainfuck のインタプリタを JS と WASM で比較して遊べるやつ
-- [brainfuck/asm](https://github.com/kobayashiharuto/brainfuck/tree/asm): アセンブリに直接変換するのを試みたブランチ(大して知識がないので意味があまりなかった...)
-
 ## 関連リポジトリ
 
 - [seelx3/bf-cpp](https://github.com/seelx3/bf-cpp)
