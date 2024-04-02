@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Brainfuck Interpreter -JS vs WASM-</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css"> 
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4">Brainfuck Interpreter -JS vs WASM-</h2>
+        <textarea id="bfCode" rows="10" class="form-control mb-3" style="font-family: monospace;">>+++++++++[<++++++++>-]<.>+++++++[<++++>-]<+.+++++++..+++.[-]>++++++++[<++++>-] <.>+++++++++++[<++++++++>-]<-.--------.+++.------.--------.[-]>++++++++[<++++>- ]<+.[-]++++++++++.</textarea>
+        <div class="mb-3">
+            <button onclick="executeBF()" class="btn btn-lg btn-primary mr-2">Execute JavaScript</button>
+            <button onclick="executeWasmBF()" class="btn btn-lg btn-info">Execute WebAssembly</button>
+        </div>
+        <div>
+            <h4>Execution Time: <span id="time" class="text-primary">0s 0ms</span></h4>
+        </div>
+        <div id="output" class="output mt-3"></div>
+        <div class="mt-5">
+            <p class="text-secondary">Developed by <strong><a href="https://github.com/kobayashiharuto" target="_blank" class="text-secondary">kobayashiharuto</a></strong>. The code is available on <strong><a href="https://github.com/kobayashiharuto/brainfuck_interpreter_js_vs_wasm" class="text-secondary" target="_blank">GitHub</a></strong>.</p>
+            <p class="text-secondary">例のマンデルブロ集合は現在JSで約35秒、WASMで約50秒ほどかかります。<br>どっちも同じようなふるまいをするコードを書いたはずなのでWASMの方が速くなると思っていたのですがなぜだろう...</p>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+
+
+
+<script>
+    let worker;
+    let startTime;
+    let intervalId;
+
+    function executeBF() {
+        if(worker) worker.terminate();
+        worker = new Worker('./js/bf-js-worker.js');
+
+        const code = document.getElementById('bfCode').value;
+        const outputElement = document.getElementById('output');
+        const timeElement = document.getElementById('time');
+        outputElement.textContent = "";
+
+        startTime = Date.now();
+        intervalId = setInterval(() => {
+            const now = Date.now();
+            const elapsed = now - startTime;
+            const seconds = Math.floor(elapsed / 1000);
+            const milliseconds = elapsed % 1000;
+            timeElement.textContent = `${seconds}s ${milliseconds}ms`;
+        }, 1);
+
+        worker.onmessage = function(e) {
+            const output = e.data;
+            clearInterval(intervalId);
+            outputElement.textContent = output;
+           
+            const now = Date.now();
+            const elapsed = now - startTime;
+            const seconds = Math.floor(elapsed / 1000);
+            const milliseconds = elapsed % 1000;
+            clearInterval(intervalId);
+            timeElement.textContent = `${seconds}s ${milliseconds}ms`;
+        };
+
+        worker.postMessage(code);
+    }
+
+    function executeWasmBF() {
+        worker = new Worker('./js/bf-wasm-worker.js', { type: "module" }); 
+
+        const code = document.getElementById('bfCode').value;
+        const outputElement = document.getElementById('output');
+        const timeElement = document.getElementById('time');
+        outputElement.textContent = "";
+
+
+        startTime = Date.now();
+        intervalId = setInterval(() => {
+            const now = Date.now();
+            const elapsed = now - startTime;
+            const seconds = Math.floor(elapsed / 1000);
+            const milliseconds = elapsed % 1000;
+            timeElement.textContent = `${seconds}s ${milliseconds}ms`;
+        }, 1);
+
+        worker.onmessage = function(e) {
+            const output = e.data;
+            clearInterval(intervalId);
+            outputElement.textContent = output;
+           
+            const now = Date.now();
+            const elapsed = now - startTime;
+            const seconds = Math.floor(elapsed / 1000);
+            const milliseconds = elapsed % 1000;
+            clearInterval(intervalId);
+            timeElement.textContent = `${seconds}s ${milliseconds}ms`;
+        };
+
+        worker.postMessage(code);
+    }
+</script>
