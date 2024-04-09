@@ -18,3 +18,4 @@ Brainfuck のインタプリタを JS と WASM で比較して遊ぼう！
 - [QRWells/bf-jit](https://github.com/QRWells/bf-jit)
 - [mkihr-ojisan/bf](https://github.com/mkihr-ojisan/bf)
 - [n0-t0/brainfuck](https://github.com/n0-t0/brainfuck)
+- [hydrokhoos/brainfuck_python](https://github.com/hydrokhoos/brainfuck_python)
